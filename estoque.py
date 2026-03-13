@@ -1,2 +1,5 @@
 estoque = ["teclado", "mouse", "monitor"]
-estoque[2]
+print(f"{estoque} monitor em falta")
+
+estoque[2] = "webcam"
+print(f"estoque atualizado {estoque}.")
