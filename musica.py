@@ -1,3 +1,5 @@
-musica = ["musica 1", "musica 2", "musica 3", "musica 4", "musica 5"]
-musica.remove("musica 3")
-musica.pop[0]
+musica = ["believer", "psychosocial", "ouro de tolo", "invencible", "feel good"]
+musica.remove("ouro de tolo")
+musica.pop(0)
+
+print(f"a musica que sobrou na posição 1 é a {musica[0] }")
