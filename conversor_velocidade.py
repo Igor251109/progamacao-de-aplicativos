@@ -1,12 +1,13 @@
-def conversor_km_para_ms(km, metros, ms):
-    metros = 3.6
-    ms = km * metros
-    if km >= 80:
-        return f"reduza a velocidade! {km}/h equivale a {ms}/s!"
-    else:
-        return "velocidade dentro do padrão."
+def conversor_km_para_ms(velocidade):
+    conversao = velocidade / 3.6
+    if velocidade > 80:
+        return f"reduza a velocidade! ({conversao}m/s.)"
+    elif velocidade <= 80:
+        return f"velocidade dentro do padrão. ({conversao}m/s.)"
 
-metros = 3.6
+print("-" * 45)
 velocidade = int(input("qual a sua velocidade atual?: "))
-conversao = conversor_km_para_ms(velocidade, metros, ms)
-print(conversao)
+print("-" * 45)
+velocidade_final = conversor_km_para_ms(velocidade)
+print(velocidade_final)
+print("-" * 45)
