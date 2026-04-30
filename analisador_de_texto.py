@@ -7,7 +7,9 @@ def analisar_texto(nome):
 
 print("-" * 40)
 nome = input("qual o nome deseja colocar?: ")
+
 print("-" * 40)
 texto_analisado = analisar_texto(nome)
+
 print(texto_analisado)
 print("-" * 40)

@@ -1,7 +1,7 @@
 # Criar uma ferramenta de saúde que recebe múltiplos dados e retorna uma análise completa.
 
 def gerar_relatorio_saude(nome, peso, altura, idade):  # calculo IMC
-    imc = peso / altura
+    imc = altura / peso
     if imc < 18.5:
         return f"O funcionário {nome}, de idade {idade} anos, está abaixo do peso."
     elif imc >= 18.5 and imc <= 24.9:
