@@ -1,3 +1,8 @@
+# Você e seu grupo de amigos decidiram criar uma lista colaborativa de lugares que desejam visitar no futuro.
+#Como ninguém quer esquecer as sugestões, você vai desenvolver um programa que funciona como um "Caderno de Viagens" digital,
+# onde as ideias ficam salvas mesmo se o computador for desligado.
+
+
 open('viagens.txt', 'w'). close()
 
 def adicionar_destino():
