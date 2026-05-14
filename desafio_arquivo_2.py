@@ -46,7 +46,8 @@ def descartar_habito():       # Excluir um hábito existente dentro do arquivo.
     with open('habitos.txt', 'r') as arquivo:
         excluir = arquivo.readlines()
 
-    del excluir[idx]
+    
+        del excluir[idx]
     print("-" * 50)
     print("Hábito excluido do sistema!")
 
