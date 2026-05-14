@@ -1,7 +1,9 @@
 paranavai
 maringá
-cascavel
-curitiba
 guarulhos
 sao paulo
-new york
+cascavel
+orlando
+curitiba
+osasco
+maringá
