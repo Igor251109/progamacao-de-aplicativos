@@ -4,13 +4,14 @@
 
 open('habitos.txt', 'w').close()    # Abrir o arquivo.
 
-def adicionar_habito():   # Adicionar hábito ao arquivo.
+def adicionar_habito():   # Adicionar um novo hábito ao arquivo.
     habito = input("qual hábito deseja adicionar no sistema?: ")
     print("-" * 50)
 
     with open('habitos.txt', 'a') as arquivo:
         arquivo.write(habito + '\n')
         print("hábito adicionado!")
+
 
 def revisar_mural():      # Ver todos os hábitos exintentes dentro do arquivo.
     with open('habitos.txt', 'r') as arquivo:
@@ -20,6 +21,7 @@ def revisar_mural():      # Ver todos os hábitos exintentes dentro do arquivo.
     for habitos in lista:
         print(f"{n} - {habitos.strip()}")
         n += 1
+
 
 def atualizar_habitos():     # Atualizar habitos existentes dentro do arquivo.
     revisar_mural()
@@ -38,6 +40,7 @@ def atualizar_habitos():     # Atualizar habitos existentes dentro do arquivo.
         print("-" * 50)
         print("Hábito atualizado!")
 
+
 def descartar_habito():       # Excluir um hábito existente dentro do arquivo.
     revisar_mural()
     print("-" * 50)
@@ -48,10 +51,15 @@ def descartar_habito():       # Excluir um hábito existente dentro do arquivo.
 
     
         del excluir[idx]
+
+    with open('habitos.txt', 'w') as arquivo:
+        arquivo.writelines(excluir)
+
     print("-" * 50)
     print("Hábito excluido do sistema!")
 
-while True:
+
+while True:          # Perguntar qual função o usuário quer fazer e executa-la.
     print("-" * 50)
     print("1 - Adicionar hábito/ 2 - Ver hábitos/ 3 - Atualizar hábitos/ 4 - Excluir hábito/ 5 - sair")
     print("-" * 50)
