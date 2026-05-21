@@ -4,53 +4,64 @@
 # Objetivo:
 # Desenvolver um CRUD completo (Criar, Ler, Atualizar e Deletar) para gerenciar o cadastro de alunos, garantindo que os dados não sejam perdidos ao fechar o programa.
 
-
 import json 
 
 
-def cadastrar_aluno():
-    dados = {"cpf": int(input("digite seu CPF: ")),
+def cadastrar_aluno():     # cadrastar um novo aluno.
+    dados = {
+            "cpf": int(input("digite seu CPF: ")),
              "nome": input("digite seu nome completo: "),
              "telefone": int(input("digite seu telefone: ")),
              "turma": int(input("qual sua turma?: ")),
              "idade": int(input("digite sua idade: "))
              }
-    print('-' * 50)
+    try:
+        with open("crud.json", 'r') as arquivo:
+            lista = json.load(arquivo)
+        print('-' * 50)
+        lista.append(dados)
+    
+    except:
+        lista = []
 
-    with open("crud.json", 'a') as arquivo:
-        json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+
+    with open("crud.json", 'w') as arquivo:
+        json.dump(lista, arquivo, indent=4, ensure_ascii=False)   
     print("aluno registrado com suceso!")
 
 
-def listar_aluno():
+def listar_aluno():      # mostrar todos os alunos cadastrados.
     with open("crud.json", 'r') as arquivo:
         dados = json.load(arquivo)
     
     n = 0
     for alunos in dados:
-        if dados == 0:
+        if alunos == 0:
             print("A lista está vazia.")
-        print(f"{n} - {alunos["nome"]}/CPF: {alunos["cpf"]}/idade: {alunos["idade"]}/ telefone: {alunos["telefone"]}/ Turma: {alunos["turma"]}")
+            break
+        print(f"{n} - {dados[n]["nome"]}/CPF: {dados[n]["cpf"]}/idade: {dados[n]["idade"]}/ telefone: {dados[n]["telefone"]}/ Turma: {dados[n]["turma"]}")
         n += 1
 
 
-def atualizar_aluno():
+def atualizar_aluno():    # atualizar as informações de algum cadastro.
     listar_aluno()
     print('-' * 50)
 
     qual_mudar = int(input('qual ID do aluno que quer mudar?: '))
     print('-' * 50)
 
-    dados = {"cpf": int(input("digite seu CPF: ")),
+    dados = {
+            "cpf": int(input("digite seu CPF: ")),
              "nome": input("digite seu nome completo: "),
              "telefone": int(input("digite seu telefone: ")),
              "turma": int(input("qual sua turma?: ")),
              "idade": int(input("digite sua idade: "))
              }
+    
     print('-' * 50)
 
     with open("crud.json", 'r') as arquivo:
-        mudar = json.load(arquivo)
+        mudar = json.loads(arquivo)
 
         mudar[qual_mudar] = dados
 
@@ -60,7 +71,7 @@ def atualizar_aluno():
     print('aluno atualizado com sucesso!')
 
 
-def excluir_aluno():
+def excluir_aluno():    # excluir algum aluno cadastrado.
     listar_aluno()
     print('-' * 50)
 
@@ -91,4 +102,5 @@ while True:
     elif op == 4: excluir_aluno()
     elif op == 5:
         print("encerrando sistema...")
+        print('-' * 50)
         break
