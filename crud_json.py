@@ -23,7 +23,7 @@ def cadastrar_aluno():     # cadrastar um novo aluno.
     
     except:
         lista = []
-
+        lista.append(dados)
 
     with open("crud.json", 'w') as arquivo:
         json.dump(lista, arquivo, indent=4, ensure_ascii=False)   
@@ -61,12 +61,12 @@ def atualizar_aluno():    # atualizar as informações de algum cadastro.
     print('-' * 50)
 
     with open("crud.json", 'r') as arquivo:
-        mudar = json.loads(arquivo)
+        mudar = json.load(arquivo)
 
         mudar[qual_mudar] = dados
 
     with open("crud.json", 'w') as arquivo:
-        json.dumps(mudar)
+        json.dump(mudar, arquivo, indent=4, ensure_ascii=False)
     
     print('aluno atualizado com sucesso!')
 
@@ -83,8 +83,8 @@ def excluir_aluno():    # excluir algum aluno cadastrado.
 
         del excluir[qual_excluir]
     
-    with open("crud.json", 'w') as arquivo:
-        json.dumps(excluir)
+        with open("crud.json", 'w') as arquivo:
+            json.dump(excluir, arquivo, indent=4, ensure_ascii=False)
 
     print("aluno excluido com sucesso!")
 

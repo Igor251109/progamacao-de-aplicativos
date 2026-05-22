@@ -1,16 +1,9 @@
 [
     {
-        "cpf": 44444,
-        "nome": "igor",
-        "telefone": 232323,
+        "cpf": 13652025938,
+        "nome": "igor oliveira rocha",
+        "telefone": 998682143,
         "turma": 2,
         "idade": 16
-    },
-    {
-        "cpf": 22222,
-        "nome": "vini",
-        "telefone": 999887,
-        "turma": 3,
-        "idade": 27
     }
 ]
