@@ -47,7 +47,7 @@ def atualizar():                # cria uma função para atualizar informações
     print("\n--- Atualizar Aluno ---")               # mostra a mensagem " atualizar aluno".
     if not os.path.exists(BANCO_DADOS):                 # se o arquivo não existir:
         print("Nenhum aluno cadastrado no sistema.")              # mostrar a mensagem "nenhum aluno cadastrado no sistema".
-        return                 # salve a mensagem em uma váriavel.
+        return                 # salve a mensagem no sistema.
 
     with open(BANCO_DADOS, 'r', encoding='utf-8') as f:               # abrir o arquivo no modo de leitura, permitindo acentos e salvando na váriavel "f".
         alunos = json.load(f)                # lê o arquivo e salva na váriavel "alunos"
@@ -114,4 +114,4 @@ def menu():                  # criar uma função do menu para o usuário.
         elif opcao == '5': break                  # se o usuário escolher a opção 5, pare o sistema.
         else: print("Opção inválida!")              # mostre a mensagem: "opção inválida!"
 
-menu()
+menu()            # chamar o menu

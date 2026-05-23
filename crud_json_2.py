@@ -6,7 +6,12 @@
 import json
 import os
 
+dados_alunos = 'alunos.json'
+
+
 def cadastrar_aluno():
+    print('==== Cadastrar Aluno ====\n')
+    
     dados = {
         "id": int(input("qual ID desejado?: ")),
         "nome": input("qual o nome completo do aluno?: "),
@@ -16,7 +21,7 @@ def cadastrar_aluno():
         "turma": int(input("qual a turma do aluno?: "))
     }
 
-    if os.path.exists("alunos.json"):
+    if os.path.exists(dados_alunos):
         with open("alunos.json", 'r') as arquivo:
             json.load(arquivo)
     
@@ -28,22 +33,32 @@ def cadastrar_aluno():
     if dados["id"]:
         print("operação cancelada!o ID já existe.")
 
-    with open("alunos.json", 'w') as arquivo:
+    with open(dados_alunos, 'w') as arquivo:
         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
     
     print("aluno adicionado com sucesso!")
 
 
 def listar_aluno():
-    with open("alunos.json", 'r') as arquivo:
-        dados = json.load(arquivo)
+    print('==== lISTAR ALUNOS ====\n')
+    if os.path.exists(dados_alunos):
+        with open(dados_alunos, 'r', encoding='utf-8') as arquivo:
+            alunos = arquivo.load()
     
-    n = 0
-    for aluno in dados:
-        if aluno == 0:
-            print("lista vazia.")
-            break
-        print(f"{n} - id: {dados[n]["id"]} | nome: {dados[n]["nome"]} | idade: {dados[n]["idade"]} | CPF: {dados[n]["cpf"]} | telefone: {dados[n]["telefone"]} | turma: {dados[n]["turma"]}")
-        n += 1
+    else:
+        alunos = []
+
+    if not alunos:
+        print('a lista está vazia.')
+        return
+
     
+
+
+    
+
+def atualizar_aluno():
+    listar_aluno()
+
+    idx = int(input('qual o ID do aluno que deseja atualizar?: '))
 
