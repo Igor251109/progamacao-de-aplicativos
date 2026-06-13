@@ -16,6 +16,7 @@ cursor.execute ('''create table if not exists alunos (
         cpf_aluno text not null
     )''')
 
+
 def registrar_alunos():
     print("\n ==== REGISTRAR ALUNO ====")
 
@@ -42,6 +43,7 @@ def ver_alunos():
 
     for aluno in dados:
         print(aluno)
+
 
 def atualizar_alunos():
     print("\n ==== ALUNOS REGISTRADOS ====")
@@ -70,17 +72,32 @@ def atualizar_alunos():
     
     else:
         print("Aluno não encontrado.")
+
+
+def deletar_aluno():
+    print("\n ==== DELETAR ALUNO ====")
+    ver_alunos()
+
+    qual_deletar = int(input("qual ID do aluno que deseja deletar?: "))
+
+    cursor.execute(
+            "DELETE FROM alunos WHERE id_aluno = ?", (qual_deletar,)
+    )
+    conexao.commit()
+
+    print("aluno removido com sucesso!")
     
 
 while True:
     print("\n ==== MENU DE INTERAÇÃO ====")
-    print("1 - adicionar alunos / 2 - ver alunos / 3 - atualizar alunos / 4 - sair")
+    print("1 - adicionar alunos / 2 - ver alunos / 3 - atualizar alunos / 4 - deletar aluno | 5 - sair")
     op = int(input("qual opção vai escolher?: "))
 
     if op == 1: registrar_alunos()
     elif op == 2: ver_alunos()
     elif op == 3: atualizar_alunos()
-    elif op == 4:
+    elif op == 4: deletar_aluno()
+    elif op == 5:
         print("encerrando programa...")
         break
     else:
