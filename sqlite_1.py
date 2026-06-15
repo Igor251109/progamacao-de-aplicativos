@@ -17,7 +17,7 @@ cursor.execute ('''create table if not exists alunos (
     )''')
 
 
-def registrar_alunos():
+def registrar_alunos():    # registrar novos alunos no banco de dados.
     print("\n ==== REGISTRAR ALUNO ====")
 
     nome = input("qual o nome completo do aluno?: ")
@@ -35,7 +35,7 @@ def registrar_alunos():
     print("aluno registrado com sucesso!")
 
 
-def ver_alunos():
+def ver_alunos():      # ver alunos no banco de dados.
     cursor.execute("SELECT * FROM alunos")
     dados = cursor.fetchall()
 
@@ -45,8 +45,7 @@ def ver_alunos():
         print(aluno)
 
 
-def atualizar_alunos():
-    print("\n ==== ALUNOS REGISTRADOS ====")
+def atualizar_alunos():      # atualizar alunos no banco de dados
     ver_alunos()
 
     print("\n ==== ATUALIZAR ALUNOS ====")
@@ -61,9 +60,13 @@ def atualizar_alunos():
     if aluno:
         novo_nome = input("qual o novo nome do aluno?: ")
         novo_cpf = input("qual é o novo CPF do aluno?: ")
+        nova_idade = int(input("qual a nova idade?: "))
+        novo_telefone = input("qual o novo telefone?: ")
+        nova_turma = input("qual a nova turma do aluo?: ")
 
         cursor.execute(
-            "UPDATE alunos SET nome_aluno = ?, cpf_aluno = ? WHERE id_aluno = ?", (novo_nome, novo_cpf, qual_mudar)
+            "UPDATE alunos SET nome_aluno = ?, cpf_aluno = ?, telefone_aluno = ?, turma_aluno = ?, idade_aluno = ? WHERE id_aluno = ?", (novo_nome, novo_cpf, novo_telefone,
+                                                                                                                                          nova_turma, nova_idade, qual_mudar)
         )
 
         conexao.commit()
@@ -74,7 +77,7 @@ def atualizar_alunos():
         print("Aluno não encontrado.")
 
 
-def deletar_aluno():
+def deletar_aluno():       # deletar alunos do banco de dados
     print("\n ==== DELETAR ALUNO ====")
     ver_alunos()
 
