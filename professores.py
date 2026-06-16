@@ -33,10 +33,10 @@ def registrar_professores():
     return
 
 def ver_professores():
-    print("\n ==== PROFESSORES REGISTRADOS ==== ")
-
-    professores = cursor.fetchall
     cursor.execute("SELECT * FROM professores")
+    professores = cursor.fetchall()
+
+    print("\n ==== PROFESSORES REGISTRADOS ==== ")
 
     for professor in professores:
         print(professor)
@@ -58,4 +58,57 @@ def atualizar_professores():
         return
     
     else:
-        nome = input()
+        nome = input("Qual o nome completo do professor? (obrigatório): ")
+        telefone = input("Qual o telefone do professor? (obrigatório): ")
+        materia = input("Qual a matéria do professor? (opcional): ")
+        idade = int(input("Qual a idade do professor?(obrigatório): "))
+        cpf = input("qual o CPF do professor? (obrigatório): ")
+        salario = input("qual o salário atual do professor? (opcional): ")
+        nome_colegio = input("qual o nome do colégio? (obrigatório): ")
+
+        cursor.execute(
+            "UPDATE professores SET nome_professor = ?, telefone_professor = ?, materia_professor = ?, idade_professor = ?, cpf_professor = ?, salario_professor = ?, nome_colegio = ?",
+            (nome, telefone, materia, idade, cpf, salario, nome_colegio )
+        ) 
+
+        print("professor atualizado com sucesso!")
+        conexao.commit()
+        conexao.close()
+        return
+
+def deletar_professores():
+    ver_professores()
+
+    print("\n ==== EXCLUIR PROFESSORES ====")
+
+    idx = int(input("qual o ID do professor que deseja excluir?: "))
+
+    cursor.execute(
+        "DELETE FROM professores WHERE id_professor = ?", (idx,)
+    )
+
+    print("professor excluido com sucesso!")
+
+    conexao.commit()
+
+def menu():
+    while True:
+        print("\n ==== MENU DO USUÁRIO ====")
+        print("1 - Registrar Professores")
+        print("2 - Ver Professores Registrados")
+        print("3 - Atualizar Informações de Professores")
+        print("4 - Deletar Professores Registrados")
+        print("5 - sair")
+
+        opcao = int(input("Qual opção vai escolher?: "))
+
+        if opcao == 1: registrar_professores()
+        elif opcao == 2: ver_professores()
+        elif opcao == 3: atualizar_professores()
+        elif opcao == 4: deletar_professores()
+        elif opcao == 5:
+            print("encerrando sistema...")
+            conexao.close()
+            return
+
+menu()
