@@ -7,27 +7,33 @@ import sqlite3
 conexao = sqlite3.connect('escola_demostracao.db')
 cursor = conexao.cursor()
 
+cursor.execute("PRAGMA foreign_keys = ON;")
+
 cursor.execute ('''create table if not exists alunos (
-        id_aluno integer primary key autoincrement,
-        nome_aluno text not null,
-        telefone_aluno text not null,
-        turma_aluno text,
-        idade_aluno integer not null,
-        cpf_aluno text not null
+        id_aluno INTEGER primary key autoincrement,
+        nome_aluno TEXT not null,
+        telefone_aluno TEXT not null,
+        turma_aluno TEXT,
+        idade_aluno INTEGER not null,
+        cpf_aluno TEXT not null,
+        id_professor_responsavel INTEGER not null,
+        
+        FOREIGN KEY (id_professor_responsavel) REFERENCES professores (id_professor)
     )''')
 
 
 def registrar_alunos():    # registrar novos alunos no banco de dados.
     print("\n ==== REGISTRAR ALUNO ====")
 
-    nome = input("qual o nome completo do aluno?: ")
-    telefone = input("qual o telefone do aluno?: ")
-    turma = input("qual a turma do aluno?: ")
-    idade = int(input("qual a idade do aluno? (opcional): "))
-    cpf = input("qual o CPF do aluno?: ")
+    nome = input("qual o nome completo do aluno? (obrigatório): ")
+    telefone = input("qual o telefone do aluno? (obrigatório): ")
+    turma = input("qual a turma do aluno? (opcional): ")
+    idade = int(input("qual a idade do aluno? (obrigatório): "))
+    cpf = input("qual o CPF do aluno? (obrigatório): ")
+    id_prof = int(input("qual o ID do professor responsável? (obrigatório): "))
 
-    comando_inserir = f'''insert into alunos (nome_aluno, telefone_aluno, turma_aluno, idade_aluno, cpf_aluno)
-    values ('{nome}', '{telefone}', '{turma}', '{idade}', '{cpf}')'''
+    comando_inserir = f'''insert into alunos (nome_aluno, telefone_aluno, turma_aluno, idade_aluno, cpf_aluno, id_professor_responsavel)
+    values ('{nome}', '{telefone}', '{turma}', {idade}, '{cpf}', {id_prof})'''
 
     cursor.execute(comando_inserir)
     conexao.commit()
@@ -42,7 +48,7 @@ def ver_alunos():      # ver alunos no banco de dados.
     print("\n ==== ALUNOS REGISTRADOS ====")
 
     for aluno in dados:
-        print(aluno)
+        print(f"alunos: {aluno} | professor: ")
 
 
 def atualizar_alunos():      # atualizar alunos no banco de dados
@@ -62,11 +68,11 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
         novo_cpf = input("qual é o novo CPF do aluno?: ")
         nova_idade = int(input("qual a nova idade?: "))
         novo_telefone = input("qual o novo telefone?: ")
-        nova_turma = input("qual a nova turma do aluo?: ")
+        nova_turma = input("qual a nova turma do aluno?: ")
 
         cursor.execute(
-            "UPDATE alunos SET nome_aluno = ?, cpf_aluno = ?, telefone_aluno = ?, turma_aluno = ?, idade_aluno = ? WHERE id_aluno = ?", (novo_nome, novo_cpf, novo_telefone,
-                                                                                                                                          nova_turma, nova_idade, qual_mudar)
+            "UPDATE alunos SET nome_aluno = ?, cpf_aluno = ?, telefone_aluno = ?, turma_aluno = ?, idade_aluno = ? WHERE id_aluno = ?",
+              (novo_nome, novo_cpf, novo_telefone, nova_turma, nova_idade, qual_mudar)
         )
 
         conexao.commit()

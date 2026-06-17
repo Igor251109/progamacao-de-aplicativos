@@ -2,6 +2,7 @@ import sqlite3
 conexao = sqlite3.connect('escola_demostracao.db')
 cursor = conexao.cursor()
 
+# Criar uma tabela "profesores" no banco de dados
 cursor.execute('''create table if not exists professores (
                id_professor integer primary key autoincrement,
                nome_professor text not null,
@@ -13,7 +14,7 @@ cursor.execute('''create table if not exists professores (
                nome_colegio text
                ) ''' )
 
-def registrar_professores():
+def registrar_professores():    # registrar professores no banco de dados
     print("\n ==== REGISTRAR PROFESSORES ====")
     nome = input("Qual o nome completo do professor? (obrigatório): ")
     telefone = input("Qual o telefone do professor? (obrigatório): ")
@@ -29,8 +30,6 @@ def registrar_professores():
     cursor.execute(comando_inserir)
     print("professor registrado com sucesso!")
     conexao.commit()
-    conexao.close()
-    return
 
 def ver_professores():
     cursor.execute("SELECT * FROM professores")
@@ -41,7 +40,7 @@ def ver_professores():
     for professor in professores:
         print(professor)
 
-def atualizar_professores():
+def atualizar_professores():    # Atualizar professores já registrados no banco de dados.
     ver_professores()
 
     print("\n ==== ATUALIZAR PROFESSORES ====")
@@ -67,16 +66,14 @@ def atualizar_professores():
         nome_colegio = input("qual o nome do colégio? (obrigatório): ")
 
         cursor.execute(
-            "UPDATE professores SET nome_professor = ?, telefone_professor = ?, materia_professor = ?, idade_professor = ?, cpf_professor = ?, salario_professor = ?, nome_colegio = ?",
-            (nome, telefone, materia, idade, cpf, salario, nome_colegio )
+            "UPDATE professores SET nome_professor = ?, telefone_professor = ?, materia_professor = ?, idade_professor = ?, cpf_professor = ?, salario_professor = ?, nome_colegio = ? WHERE id_professor = ?",
+            (nome, telefone, materia, idade, cpf, salario, nome_colegio, id_professor )
         ) 
 
         print("professor atualizado com sucesso!")
         conexao.commit()
-        conexao.close()
-        return
 
-def deletar_professores():
+def deletar_professores():    # Deletar professores já registados no banco de dados.
     ver_professores()
 
     print("\n ==== EXCLUIR PROFESSORES ====")
@@ -91,7 +88,7 @@ def deletar_professores():
 
     conexao.commit()
 
-def menu():
+def menu():     # Menu de interação com o usário.
     while True:
         print("\n ==== MENU DO USUÁRIO ====")
         print("1 - Registrar Professores")
@@ -109,6 +106,6 @@ def menu():
         elif opcao == 5:
             print("encerrando sistema...")
             conexao.close()
-            return
+            break
 
 menu()
