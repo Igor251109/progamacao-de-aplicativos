@@ -7,16 +7,14 @@ import sqlite3
 conexao = sqlite3.connect('escola_demostracao.db')
 cursor = conexao.cursor()
 
-cursor.execute("PRAGMA foreign_keys = ON;")
-
-cursor.execute ('''create table if not exists alunos (
-        id_aluno INTEGER primary key autoincrement,
-        nome_aluno TEXT not null,
-        telefone_aluno TEXT not null,
+cursor.execute ('''CREATE TABLE IF NOT EXISTS alunos (
+        id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome_aluno TEXT NOT NULL,
+        telefone_aluno TEXT NOT NULL,
         turma_aluno TEXT,
-        idade_aluno INTEGER not null,
-        cpf_aluno TEXT not null,
-        id_professor_responsavel INTEGER not null,
+        idade_aluno INTEGER NOT NULL,
+        cpf_aluno TEXT NOT NULL,
+        id_professor_responsavel INTEGER NOT NULL,
         
         FOREIGN KEY (id_professor_responsavel) REFERENCES professores (id_professor)
     )''')
@@ -48,7 +46,7 @@ def ver_alunos():      # ver alunos no banco de dados.
     print("\n ==== ALUNOS REGISTRADOS ====")
 
     for aluno in dados:
-        print(f"alunos: {aluno} | professor: ")
+        print(f"alunos: {aluno}")
 
 
 def atualizar_alunos():      # atualizar alunos no banco de dados
@@ -96,8 +94,8 @@ def deletar_aluno():       # deletar alunos do banco de dados
 
     print("aluno removido com sucesso!")
     
-
-while True:
+op = 0
+while op != 5:
     print("\n ==== MENU DE INTERAÇÃO ====")
     print("1 - adicionar alunos / 2 - ver alunos / 3 - atualizar alunos / 4 - deletar aluno | 5 - sair")
     op = int(input("qual opção vai escolher?: "))
@@ -107,8 +105,9 @@ while True:
     elif op == 3: atualizar_alunos()
     elif op == 4: deletar_aluno()
     elif op == 5:
+        print("-" * 30)
         print("encerrando programa...")
-        break
+        
     else:
         print("opção invalida.")
 
