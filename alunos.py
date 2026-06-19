@@ -15,6 +15,7 @@ cursor.execute ('''CREATE TABLE IF NOT EXISTS alunos (
         idade_aluno INTEGER NOT NULL,
         cpf_aluno TEXT NOT NULL,
         id_professor_responsavel INTEGER NOT NULL,
+        endereco TEXT,
         
         FOREIGN KEY (id_professor_responsavel) REFERENCES professores (id_professor)
     )''')
@@ -28,10 +29,11 @@ def registrar_alunos():    # registrar novos alunos no banco de dados.
     turma = input("qual a turma do aluno? (opcional): ")
     idade = int(input("qual a idade do aluno? (obrigatório): "))
     cpf = input("qual o CPF do aluno? (obrigatório): ")
+    endereco = input("qual o endereço do aluno? (opcional): ")
     id_prof = int(input("qual o ID do professor responsável? (obrigatório): "))
 
-    comando_inserir = f'''insert into alunos (nome_aluno, telefone_aluno, turma_aluno, idade_aluno, cpf_aluno, id_professor_responsavel)
-    values ('{nome}', '{telefone}', '{turma}', {idade}, '{cpf}', {id_prof})'''
+    comando_inserir = f'''insert into alunos (nome_aluno, telefone_aluno, turma_aluno, idade_aluno, cpf_aluno, endereco, id_professor_responsavel)
+    values ('{nome}', '{telefone}', '{turma}', {idade}, '{cpf}', '{endereco}', {id_prof})'''
 
     cursor.execute(comando_inserir)
     conexao.commit()
@@ -62,15 +64,16 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
     aluno = cursor.fetchone()
 
     if aluno:
-        novo_nome = input("qual o novo nome do aluno?: ")
-        novo_cpf = input("qual é o novo CPF do aluno?: ")
-        nova_idade = int(input("qual a nova idade?: "))
-        novo_telefone = input("qual o novo telefone?: ")
-        nova_turma = input("qual a nova turma do aluno?: ")
+        novo_nome = input("qual o novo nome do aluno? (obrigatório): ")
+        novo_cpf = input("qual é o novo CPF do aluno? (obrigatório): ")
+        nova_idade = int(input("qual a nova idade? (obrigatório): "))
+        novo_telefone = input("qual o novo telefone? (obrigatório): ")
+        nova_turma = input("qual a nova turma do aluno? (opcional): ")
+        novo_endereço = input("qual o novo endereço do aluno? (opcional): ")
 
         cursor.execute(
-            "UPDATE alunos SET nome_aluno = ?, cpf_aluno = ?, telefone_aluno = ?, turma_aluno = ?, idade_aluno = ? WHERE id_aluno = ?",
-              (novo_nome, novo_cpf, novo_telefone, nova_turma, nova_idade, qual_mudar)
+            "UPDATE alunos SET nome_aluno = ?, cpf_aluno = ?, telefone_aluno = ?, turma_aluno = ?, idade_aluno = ?, endereco = ? WHERE id_aluno = ?",
+              (novo_nome, novo_cpf, novo_telefone, nova_turma, nova_idade, novo_endereço, qual_mudar)
         )
 
         conexao.commit()
