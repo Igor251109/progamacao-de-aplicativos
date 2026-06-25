@@ -45,6 +45,7 @@ def registrar_alunos():    # registrar novos alunos no banco de dados.
         return
     except sqlite3.IntegrityError:
         print("ERROR: Campo obrigatório não preenchido / Dados unicos já existentes")
+        return
 
     print("aluno registrado com sucesso!")
 
@@ -60,6 +61,7 @@ def ver_alunos():      # ver alunos no banco de dados.
             print(f"alunos: {aluno}")
     except sqlite3.OperationalError:
         print("ERROR: erro no banco de dados (verefique se esta aberto).")
+        return
 
 
 def atualizar_alunos():      # atualizar alunos no banco de dados
