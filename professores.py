@@ -30,18 +30,35 @@ def registrar_professores():    # registrar professores no banco de dados
         values ('{nome}', '{telefone}', '{materia}', {idade}, '{cpf}', {salario}, '{nome_colegio}') '''
         
         cursor.execute(comando_inserir)
+
+        print("-" * 30)
         print("professor registrado com sucesso!")
+        print("-" * 30)
+
         conexao.commit()
+
     except ValueError:
+        print("-" * 30)
         print("ERROR: digite as informações de forma válida.")
+        print("-" * 30)
         return
     
     except sqlite3.IntegrityError:
+        print("-" * 30)
         print("ERROR: Campo obrigatório não preenchido / Dados unicos já existentes")
+        print("-" * 30)
         return
     
     except sqlite3.OperationalError:
+        print("-" * 30)
         print("ERROR: erro no banco de dados (verefique se esta aberto).")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
         return
 
 def ver_professores():
@@ -49,13 +66,25 @@ def ver_professores():
         cursor.execute("SELECT * FROM professores")
         professores = cursor.fetchall()
 
+        if not professores:
+            print("não tem nenhum professor no banco de dados.")
+            return
+
         print("\n ==== PROFESSORES REGISTRADOS ==== ")
 
         for professor in professores:
             print(professor)
     
     except sqlite3.OperationalError:
+        print("-" * 30)
         print("ERROR: erro no banco de dados (verefique se esta aberto).")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
         return
 
 def atualizar_professores():    # Atualizar professores já registrados no banco de dados.
@@ -87,18 +116,40 @@ def atualizar_professores():    # Atualizar professores já registrados no banco
                 f"UPDATE professores SET nome_professor = '{nome}', telefone_professor = '{telefone}', materia_professor = '{materia}', idade_professor = {idade}, cpf_professor = '{cpf}', salario_professor = {salario}, nome_colegio = '{nome_colegio}' WHERE id_professor = {id_professor}"
             ) 
 
+            print("-" * 30)
             print("professor atualizado com sucesso!")
+            print("-" * 30)
+
             conexao.commit()
+
     except ValueError:
+        print("-" * 30)
         print("ERROR: digite as informações de forma válida.")
+        print("-" * 30)
         return
     
     except sqlite3.IntegrityError:
+        print("-" * 30)
         print("ERROR: Campo obrigatório não preenchido / Dados unicos já existentes")
+        print("-" * 30)
         return
     
     except sqlite3.OperationalError:
+        print("-" * 30)
         print("ERROR: erro no banco de dados (verefique se esta aberto).")
+        print("-" * 30)
+        return
+    
+    except IndexError:
+        print("-" * 30)
+        print("ERROR: Tentativa de acessar um dado de coluna que não existe.")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
         return
     
 
@@ -115,11 +166,28 @@ def deletar_professores():    # Deletar professores já registados no banco de d
             f"DELETE FROM professores WHERE id_professor = {idx}"
         )
 
+        print("-" * 30)
         print("professor excluido com sucesso!")
+        print("-" * 30)
 
         conexao.commit()
+
     except ValueError:
+        print("-" * 30)
         print("ERROR: digite as informações de forma válida.")
+        print("-" * 30)
+        return
+    
+    except IndexError:
+        print("-" * 30)
+        print("ERROR: Tentativa de acessar um dado de coluna que não existe.")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
         return
 
 def menu():     # Menu de interação com o usário.
@@ -139,13 +207,27 @@ def menu():     # Menu de interação com o usário.
             elif opcao == 3: atualizar_professores()
             elif opcao == 4: deletar_professores()
             elif opcao == 5:
+                print("-" * 30)
                 print("encerrando sistema...")
+                print("-" * 30)
                 conexao.close()
                 break
-            else:print("opção invalida! escolha um numero de 1 a 5.")
+            
+            else:
+                print("-" * 30)
+                print("opção invalida! escolha um numero de 1 a 5.")
+                print("-" * 30)
 
     except ValueError:
+        print("-" * 30)
         print("ERROR: digite as informações de forma válida.")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
         return
     
 menu()

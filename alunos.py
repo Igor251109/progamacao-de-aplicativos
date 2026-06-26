@@ -7,6 +7,7 @@ import sqlite3
 conexao = sqlite3.connect('escola_demostracao.db')
 cursor = conexao.cursor()
 
+   # criar a tabela no banco de dados
 cursor.execute ('''CREATE TABLE IF NOT EXISTS alunos (
         id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
         nome_aluno TEXT NOT NULL,
@@ -39,15 +40,30 @@ def registrar_alunos():    # registrar novos alunos no banco de dados.
 
         cursor.execute(comando_inserir)
         conexao.commit()
+        
+        print("-" * 30)
+        print("aluno registrado com sucesso!")
+        print("-" * 30)
 
     except ValueError:
+        print("-" * 30)
         print("Erro: digite as informações de maneira correta.")
+        print("-" * 30)
         return
+    
     except sqlite3.IntegrityError:
-        print("ERROR: Campo obrigatório não preenchido / Dados unicos já existentes")
+        print("-" * 30)
+        print("ERROR: erro inesperado no banco de dados.")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
         return
 
-    print("aluno registrado com sucesso!")
+    
 
 
 def ver_alunos():      # ver alunos no banco de dados.
@@ -59,8 +75,17 @@ def ver_alunos():      # ver alunos no banco de dados.
 
         for aluno in dados:
             print(f"alunos: {aluno}")
+    
     except sqlite3.OperationalError:
+        print("-" * 30)
         print("ERROR: erro no banco de dados (verefique se esta aberto).")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
         return
 
 
@@ -72,13 +97,15 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
         qual_mudar = int(input("qual ID do aluno que quer atualizar?: "))
 
         cursor.execute(
-            "SELECT * FROM alunos WHERE id_aluno = ?", (qual_mudar,)
+            f"SELECT * FROM alunos WHERE id_aluno = {qual_mudar}"
         )
 
         aluno = cursor.fetchone()
 
         if not aluno:
+            print("-" * 30)
             print("o aluno não existe")
+            print("-" * 30)
             return
 
         elif aluno:
@@ -88,22 +115,43 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
             novo_telefone = input("qual o novo telefone? (obrigatório): ")
             nova_turma = input("qual a nova turma do aluno? (opcional): ")
             novo_endereco = input("qual o novo endereço do aluno? (opcional): ")
-    except ValueError:
-        print("ERROR: digite as informações de maneira correta.")
-        return
 
-    try:
         cursor.execute(
-                "UPDATE alunos SET nome_aluno = ?, cpf_aluno = ?, telefone_aluno = ?, turma_aluno = ?, idade_aluno = ?, endereco = ? WHERE id_aluno = ?",
-                (novo_nome, novo_cpf, novo_telefone, nova_turma, nova_idade, novo_endereco, qual_mudar))
+            f"UPDATE alunos SET nome_aluno = '{novo_nome}', cpf_aluno = '{novo_cpf}', telefone_aluno = '{novo_telefone}', turma_aluno = '{nova_turma}', idade_aluno = {nova_idade}, endereco = '{novo_endereco}' WHERE id_aluno = {qual_mudar}")
         
         print("Aluno atualizado com sucesso!")
 
         conexao.commit()
+    
     except sqlite3.OperationalError:
+        print("-" * 30)
         print("ERROR: dados duplicados / espaços obrigatório nao preenchido")
+        print("-" * 30)
+    
     except sqlite3.IntegrityError:
-        print("ERROR: erro no banco de dados.")
+        print("-" * 30)
+        print("ERROR: erro inesperado no banco de dados.")
+        print("-" * 30)
+        return
+        
+    except ValueError:
+        print("-" * 30)
+        print("ERROR: digite as informações de maneira correta.")
+        print("-" * 30)
+        return
+    
+    except IndexError:
+        print("-" * 30)
+        print("ERROR: Tentativa de acessar um dado de coluna que não existe.")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
+        return
+
 
 
 def deletar_aluno():       # deletar alunos do banco de dados
@@ -112,42 +160,79 @@ def deletar_aluno():       # deletar alunos do banco de dados
 
     try:
         qual_deletar = int(input("qual ID do aluno que deseja deletar?: "))
-    except ValueError:
-        print("ERROR: digite um número valido.")
-        return
 
-    try:
         cursor.execute(
-                "DELETE FROM alunos WHERE id_aluno = ?", (qual_deletar,)
+                f"DELETE FROM alunos WHERE id_aluno = {qual_deletar}"
         )
         conexao.commit()
-
+        
         print("aluno removido com sucesso!")
+    
     except sqlite3.OperationalError:
+        print("-" * 30)
         print("ERROR: erro no banco de dados. verefique o codigo SQL.")
+        print("-" * 30)
+        return
+
+    except ValueError:
+        print("-" * 30)
+        print("ERROR: digite um número valido.")
+        print("-" * 30)
+        return
+    
+    except IndexError:
+        print("-" * 30)
+        print("ERROR: Tentativa de acessar um dado de coluna que não existe.")
+        print("-" * 30)
+        return
+    
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+        print("-" * 30)
+        print("Operação cancelada pelo usuário.")
+        print("-" * 30)
+        return
+
 
 
 def menu():
     op = 0
     while op != 5:
         print("\n ==== MENU DE INTERAÇÃO ====")
-        print("1 - adicionar alunos / 2 - ver alunos / 3 - atualizar alunos / 4 - deletar aluno | 5 - sair")
+        print("1 - adicionar alunos")
+        print("2 - ver alunos")
+        print("3 - atualizar alunos")
+        print("4 - excluir aluno")
+        print("5 - sair")
+        
         try:
             op = int(input("qual opção vai escolher?: "))
+
+            if op == 1: registrar_alunos()
+            elif op == 2: ver_alunos()
+            elif op == 3: atualizar_alunos()
+            elif op == 4: deletar_aluno()
+            elif op == 5:
+                print("-" * 30)
+                print("encerrando programa...")
+                print("-" * 30)
+                    
+            else:
+                print("-" * 30)
+                print("Opção invalida. Digite um número de 1 a 5.")
+                print("-" * 30)
+                continue
+        
         except ValueError:
+            print("-" * 30)
             print("ERROR: digite um numero valido.")
+            print("-" * 30)
             continue
 
-        if op == 1: registrar_alunos()
-        elif op == 2: ver_alunos()
-        elif op == 3: atualizar_alunos()
-        elif op == 4: deletar_aluno()
-        elif op == 5:
+        except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
             print("-" * 30)
-            print("encerrando programa...")
-                
-        else:
-            print("opção invalida.")
+            print("Operação cancelada pelo usuário.")
+            print("-" * 30)
+            return
 
 menu()
 conexao.close()
