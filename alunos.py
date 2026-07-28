@@ -52,8 +52,27 @@ def registrar_alunos():    # registrar novos alunos no banco de dados.
         return
     
     except sqlite3.IntegrityError:
+        # Trata erros causados por violação de regras de integridade, como
+        # chaves duplicadas, referências inválidas ou campos obrigatórios.
+
+        # ERROS POSSIVEIS: 
+        # VIOLAÇÃO DE PRIMARY KEY
+        # A chave primária informada já existe no banco de dados.
+
+        # VIOLAÇÃO DE UNIQUE
+        # O valor informado deve ser único, mas já está cadastrado.
+
+        # VIOLAÇÃO DE FOREIGN KEY
+        # A referência a outro registro é inválida ou inexistente.
+
+        # VIOLAÇÃO DE NOTNULL
+        # Um campo obrigatório não recebeu um valor.
+
+        # VIOLAÇÃO DE CHECK
+        # O valor informado não atende às regras definidas para o campo.
+
         print("-" * 30)
-        print("ERROR: erro inesperado no banco de dados.")
+        print("ERROR: erro de integridade.")
         print("-" * 30)
         return
     
@@ -124,13 +143,46 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
         conexao.commit()
     
     except sqlite3.OperationalError:
+        #   ERROS POSSIVEIS: 
+        # Trata erros operacionais do SQLite, como falha de conexão,
+        # tabela inexistente, banco bloqueado ou erro na execução da consulta.
+
+        # AO CONECTAR AO BANCO
+        # O banco de dados não pôde ser aberto ou acessado
+
+        # AO EXECUTAR UMA CONSULTA
+        # A consulta SQL não pôde ser executada devido a um erro operacional.
+
+        # AO CRIAR TABELAS
+        # Ocorreu um erro ao criar ou acessar a estrutura do banco de dados.
+
         print("-" * 30)
-        print("ERROR: dados duplicados / espaços obrigatório nao preenchido")
+        print("ERROR: erro operacional no banco de dados.")
         print("-" * 30)
+        return
     
     except sqlite3.IntegrityError:
+        # Trata erros causados por violação de regras de integridade, como
+        # chaves duplicadas, referências inválidas ou campos obrigatórios.
+
+        # ERROS POSSIVEIS: 
+        # VIOLAÇÃO DE PRIMARY KEY
+        # A chave primária informada já existe no banco de dados.
+
+        # VIOLAÇÃO DE UNIQUE
+        # O valor informado deve ser único, mas já está cadastrado.
+
+        # VIOLAÇÃO DE FOREIGN KEY
+        # A referência a outro registro é inválida ou inexistente.
+
+        # VIOLAÇÃO DE NOTNULL
+        # Um campo obrigatório não recebeu um valor.
+
+        # VIOLAÇÃO DE CHECK
+        # O valor informado não atende às regras definidas para o campo.
+
         print("-" * 30)
-        print("ERROR: erro inesperado no banco de dados.")
+        print("ERROR: erro de integridade.")
         print("-" * 30)
         return
         
@@ -141,12 +193,16 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
         return
     
     except IndexError:
+         # Trata erros ao acessar posições inexistentes em listas, tuplas ou strings.
+
         print("-" * 30)
         print("ERROR: Tentativa de acessar um dado de coluna que não existe.")
         print("-" * 30)
         return
     
-    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+    except KeyboardInterrupt:  
+         # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+
         print("-" * 30)
         print("Operação cancelada pelo usuário.")
         print("-" * 30)
