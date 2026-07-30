@@ -26,9 +26,7 @@ def cadastrar_lista_alunos():
                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                    nome TEXT,
                    id_turma INTEGER)''')
-	
-    # O comando executemany quebra com a mensagem: "function takes exactly 2 arguments". 
-	# Como passar a lista de dados da forma correta dentro dele? 
+	 
     cursor.executemany("INSERT INTO alunos (nome, id_turma) VALUES (?, ?)", lista)
      
     conexao.commit() 
