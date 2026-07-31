@@ -47,7 +47,7 @@ def registrar_alunos():    # registrar novos alunos no banco de dados.
 
     except ValueError:
         print("-" * 30)
-        print("Erro: digite as informações de maneira correta.")
+        print("Erro: digite as informações de forma válida.")
         print("-" * 30)
         return
     
@@ -72,7 +72,7 @@ def registrar_alunos():    # registrar novos alunos no banco de dados.
         # O valor informado não atende às regras definidas para o campo.
 
         print("-" * 30)
-        print("ERROR: erro de integridade.")
+        print("ERROR: Erro de integridade.")
         print("-" * 30)
         return
     
@@ -97,7 +97,7 @@ def ver_alunos():      # ver alunos no banco de dados.
     
     except sqlite3.OperationalError:
         print("-" * 30)
-        print("ERROR: erro no banco de dados (verefique se esta aberto).")
+        print("ERROR: Erro operacional no Banco de Dados.")
         print("-" * 30)
         return
     
@@ -123,7 +123,7 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
 
         if not aluno:
             print("-" * 30)
-            print("o aluno não existe")
+            print("aluno inexintente.")
             print("-" * 30)
             return
 
@@ -188,7 +188,7 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
         
     except ValueError:
         print("-" * 30)
-        print("ERROR: digite as informações de maneira correta.")
+        print("ERROR: digite as informações de maneira válida.")
         print("-" * 30)
         return
     
@@ -196,7 +196,7 @@ def atualizar_alunos():      # atualizar alunos no banco de dados
          # Trata erros ao acessar posições inexistentes em listas, tuplas ou strings.
 
         print("-" * 30)
-        print("ERROR: Tentativa de acessar um dado de coluna que não existe.")
+        print("ERROR: Tentativa de acessar um dado inexistente na tabela/coluna.")
         print("-" * 30)
         return
     
@@ -226,25 +226,25 @@ def deletar_aluno():       # deletar alunos do banco de dados
     
     except sqlite3.OperationalError:
         print("-" * 30)
-        print("ERROR: erro no banco de dados. verefique o codigo SQL.")
+        print("ERROR: erro no banco de dados, verefique o codigo SQL.")
         print("-" * 30)
         return
 
     except ValueError:
         print("-" * 30)
-        print("ERROR: digite um número valido.")
+        print("ERROR: digite um número válido.")
         print("-" * 30)
         return
     
     except IndexError:
         print("-" * 30)
-        print("ERROR: Tentativa de acessar um dado de coluna que não existe.")
+        print("ERROR: Tentativa de acessar um dado inexistente na tabela/coluna.")
         print("-" * 30)
         return
     
     except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
         print("-" * 30)
-        print("Operação cancelada pelo usuário.")
+        print("Operação cancelada pelo usuário, programa encerrado.")
         print("-" * 30)
         return
 
@@ -271,6 +271,7 @@ def menu():
                 print("-" * 30)
                 print("encerrando programa...")
                 print("-" * 30)
+                break
                     
             else:
                 print("-" * 30)
@@ -280,13 +281,13 @@ def menu():
         
         except ValueError:
             print("-" * 30)
-            print("ERROR: digite um numero valido.")
+            print("ERROR: digite um número valido.")
             print("-" * 30)
             continue
 
         except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
             print("-" * 30)
-            print("Operação cancelada pelo usuário.")
+            print("Operação cancelada pelo usuário, programa encerrado.")
             print("-" * 30)
             return
 

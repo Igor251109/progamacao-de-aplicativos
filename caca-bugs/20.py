@@ -35,10 +35,6 @@ def cadastrar_escola_manual():
 
         cursor.execute(f"SELECT * FROM escolas WHERE id = {id_escola}")
 
-        if cursor.fetchone() == id_escola:
-            print("o ID já existe!")
-            return
-
         cursor.execute("INSERT INTO escolas (id, nome) VALUES (?, ?)", (id_escola, nome)) 
         
         conexao.commit() 
