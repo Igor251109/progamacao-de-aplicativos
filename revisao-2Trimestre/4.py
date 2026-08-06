@@ -1,288 +1,290 @@
 import sqlite3
 
-def criar_banco():
+def create_bank():
     try:
-        conexao = sqlite3.connect('hotelaria.db')
-        cursor = conexao.cursor()
+        connection = sqlite3.connect('hotelaria.db')
+        cursor = connection.cursor()
         cursor.execute("PRAGMA foreign_keys = ON")
 
         cursor.execute('''CREATE TABLE IF NOT EXISTS hoteis (
                        id_hotel INTEGER PRIMARY KEY AUTOINCREMENT,
-                       nome_hotel TEXT,
-                       cidade_hotel TEXT
+                       name_hotel TEXT,
+                       city_hotel TEXT
                        )
                        ''')
         
-        cursor.execute('''CREATE TABLE IF NOT EXISTS quartos (
-                       id_quarto INTEGER PRIMARY KEY AUTOINCREMENT,
-                       numero_quarto INTEGER NOT NULL,
-                       preco_diaria REAL NOT NULL,
-                       id_hotel_escolhido,
-                       FOREIGN KEY (id_hotel_escolhido) REFERENCES hoteis (id_hotel)
+
+        # daily_rate = preco_diaria
+        cursor.execute('''CREATE TABLE IF NOT EXISTS rooms (
+                       id_room INTEGER PRIMARY KEY AUTOINCREMENT,
+                       number_room INTEGER NOT NULL,
+                       daily_rate REAL NOT NULL,
+                       id_hotel_room INTEGER,
+                       FOREIGN KEY (id_hotel_room) REFERENCES hoteis (id_hotel)
                        )
                        ''')
         
-        conexao.commit()
+        connection.commit()
 
     except sqlite3.IntegrityError as e:
-
         print("-" * 30)
-        print("ERROR: Erro de integridade.", e)
+        print(" Integrity Error.", e)
         print("-" * 30)
         return
     
     except sqlite3.OperationalError as e:
         print("-" * 30)
-        print("ERROR: erro no banco de dados, verefique o codigo SQL.", e)
+        print("ERROR: database error; check the SQL code.", e)
         print("-" * 30)
         return
     
     finally:
-        conexao.close()
+        connection.close()
 
-def cadastrar():
+def sign_up():
     try:
-        conexao = sqlite3.connect('hotelaria.db')
-        cursor = conexao.cursor()
+        connection = sqlite3.connect('hotelaria.db')
+        cursor = connection.cursor()
         cursor.execute("PRAGMA foreign_keys = ON")
         
-        print("\n ==== CADASTRAR HOTEL ====")
+        print("\n ==== REGISTER HOTEL ====")
         print("-" * 30)
-        nome_hotel = input("qual o nome do hotel?: ")
+        name_hotel = input("What is the name of the hotel?: ")
         print("-" * 30)
-        cidade_hotel = input("qual o nome da cidade que o hotel está localizado?: ")
+        city_hotel = input("What is the name of the city where the hotel is located?: ")  # qual o nome da cidade que o hotel está localizado?
         print("-" * 30)
 
-        print("\n ==== CADASTRAR QUARTOS ====")
+        print("\n ==== REGISTER ROOMS ====")
         print("-" * 30)
-        numero_quarto = int(input("qual o numero do quarto de hotel?: "))
+        number_room = int(input("What is the hotel room number?: "))
         print("-" * 30)
-        preco_diaria = float(input("qual o preço da diaria do quarto?: "))
+        daily_rate = float(input("What is the nightly rate for the room?: "))    # preco_diaria - qual o preço da diaria do quarto?
         print("-" * 30)
-        id_hotel = int(input("qual o ID do hotel do quarto?: "))
+        id_hotel = int(input("What is the hotel room ID?: ")) # qual é o ID do hotel do quarto?
 
-        cursor.execute("INSERT INTO hoteis (nome_hotel, cidade_hotel) VALUES (?, ?)", (nome_hotel, cidade_hotel))
-        cursor.execute("INSERT INTO quartos (numero_quarto, preco_diaria, id_hotel_escolhido) VALUES (?, ?, ?)", (numero_quarto, preco_diaria, id_hotel))
+        cursor.execute("INSERT INTO hoteis (name_hotel, city_hotel) VALUES (?, ?)", (name_hotel, city_hotel))
+        cursor.execute("INSERT INTO rooms (number_room, daily_rate, id_hotel_room) VALUES (?, ?, ?)", (number_room, daily_rate, id_hotel))
 
-        conexao.commit()
+        connection.commit()
 
         print("-" * 30)
-        print("Informações adicionadas com sucesso!")
+        print("Information successfully added!")
         print("-" * 30)
     
     except ValueError as e:
         print("-" * 30)
-        print("Erro: digite as informações de forma válida.", e)
+        print("Error: enter valid information.", e)
         print("-" * 30)
         return
     
     except sqlite3.IntegrityError as e:
         print("-" * 30)
-        print("ERROR: Erro de integridade.", e)
+        print(" Integrity Error.", e)
         print("-" * 30)
         return
     
     except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
-        print("-" * 30)
-        print("Operação cancelada pelo usuário.")
-        print("-" * 30)
-        return
+            print("-" * 30)
+            print("Operation cancelled by the user; program terminated.")
+            print("-" * 30)
+            return
     
     except sqlite3.OperationalError as e:
         print("-" * 30)
-        print("ERROR: erro no banco de dados, verefique o codigo SQL.", e)
+        print("ERROR: database error; check the SQL code.", e)
         print("-" * 30)
         return
     
     finally:
-        conexao.close()
+        connection.close()
 
-def ver():
+def see():
     try:
-        conexao = sqlite3.connect('hotelaria.db')
-        cursor = conexao.cursor()
+        connection = sqlite3.connect('hotelaria.db')
+        cursor = connection.cursor()
 
-        cursor.execute("SELECT * FROM quartos")
-        dados = cursor.fetchall()
+        cursor.execute("SELECT * FROM rooms")
+        data = cursor.fetchall()
 
-        print("\n ==== CADASTROS ====")
-        for quarto in dados:
-            print(quarto)
+        print("\n ==== REGISTRATIONS ====")   # "data" = dados
+        for room in data:
+            print(room)
     
     except sqlite3.OperationalError as e:
         print("-" * 30)
-        print("ERROR: Erro operacional no Banco de Dados.", e)
+        print("ERROR: database error; check the SQL code.", e)
         print("-" * 30)
         return
     
     except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
-        print("-" * 30)
-        print("Operação cancelada pelo usuário.")
-        print("-" * 30)
-        return
-
-def atualizar():
-    try:
-        conexao = sqlite3.connect('hotelaria.db')
-        cursor = conexao.cursor()
-
-        ver()
-
-        cursor.execute("SELECT * FROM quartos")
-        dados = cursor.fetchall()
-
-        qual_mudar = int(input("qual o ID que deseja alterar?: "))
-
-        if not dados:
             print("-" * 30)
-            print("não há nenhum cadastro no sistema.")
+            print("Operation cancelled by the user; program terminated.")
+            print("-" * 30)
+            return
+    
+    finally:
+        connection.close()
+
+def to_update():
+    try:
+        connection = sqlite3.connect('hotelaria.db')
+        cursor = connection.cursor()
+
+        see()
+
+        cursor.execute("SELECT * FROM rooms")
+        data = cursor.fetchall()
+
+        which_one_to_change = int(input("Which ID do you wish to change?: "))    #"which_one_to_change" = qual_mudar  -  qual ID deseja mudar?
+
+        if not data:
+            print("-" * 30)
+            print("There is no record in the system.")  # não há nenhum cadastro no sistema.
             print("-" * 30)
             return
 
         print("\n ==== MENU DE ALTERAÇÃO ====")
-        numero_quarto = int(input("qual o numero do quarto de hotel?: "))
+        number_room = int(input("What is the hotel room number?: "))
         print("-" * 30)
-        preco_diaria = float(input("qual o preço da diaria do quarto?: "))
+        daily_rate = float(input("What is the nightly rate for the room?: "))    # preco_diaria - qual o preço da diaria do quarto?
         print("-" * 30)
-        id_hotel = int(input("qual o ID do hotel do quarto?: "))
+        id_hotel = int(input("What is the hotel room ID?: ")) # qual é o ID do hotel do quarto?
 
-        cursor.execute("UPDATE quartos SET numero_quarto = ?, preco_diaria = ?, id_hotel_escolhido = ? WHERE id_quarto = ?", (numero_quarto, preco_diaria, id_hotel, qual_mudar))
+        cursor.execute("UPDATE rooms SET number_room = ?, daily_rate = ?, id_hotel_room = ? WHERE id_room = ?", (number_room, daily_rate, id_hotel, which_one_to_change))
 
-        conexao.commit()
+        connection.commit()
 
         print("-" * 30)
-        print("informações atualizadas com sucesso!")
+        print("Information successfully updated!")  # informações atualizadas com sucesso!
         print("-" * 30)
 
     except sqlite3.OperationalError as e:
         print("-" * 30)
-        print("ERROR: erro operacional no banco de dados.", e)
+        print("ERROR: database error; check the SQL code.", e)
         print("-" * 30)
         return
     
     except sqlite3.IntegrityError as e:
         print("-" * 30)
-        print("ERROR: erro de integridade.", e)
+        print(" Integrity Error.", e)
         print("-" * 30)
         return
         
     except ValueError as e:
         print("-" * 30)
-        print("ERROR: digite as informações de maneira válida.", e)
+        print("Error: enter valid information.", e)
         print("-" * 30)
         return
     
     except IndexError as e:
-         # Trata erros ao acessar posições inexistentes em listas, tuplas ou strings.
         print("-" * 30)
-        print("ERROR: Tentativa de acessar um dado inexistente na tabela/coluna.", e)
+        print("ERROR: Attempt to access non-existent data in the table/column.", e)
         print("-" * 30)
         return
     
-    except KeyboardInterrupt:  
-         # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
-        print("-" * 30)
-        print("Operação cancelada pelo usuário.")
-        print("-" * 30)
-        return
+    except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
+            print("-" * 30)
+            print("Operation cancelled by the user; program terminated.")
+            print("-" * 30)
+            return
     
     finally:
-        conexao.close()
+        connection.close()
 
-def deletar():
+def delete():
     try:
-        conexao = sqlite3.connect('hotelaria.db')
-        cursor = conexao.cursor()
+        connection = sqlite3.connect('hotelaria.db')
+        cursor = connection.cursor()
 
-        ver()
+        see()
 
-        cursor.execute("SELECT * FROM quartos")
-        dados = cursor.fetchall()
+        cursor.execute("SELECT * FROM rooms")
+        data = cursor.fetchall()
 
-        if not dados:
+        if not data:
             print("-" * 30)
-            print("não há nenhum cadastro no sitema.")
+            print("There is no record in the system.")  # não há nenhum cadastro no sistema.
             print("-" * 30)
             return
         
-        print("\n ==== DELETAR CADASTRO ==== ")
-        qual_mudar = int(input("qual o ID que deseja deletar?: "))
+        print("\n ==== DELETE ACCOUNT ==== ")
+        which_one_to_change = int(input("Which ID do you want to delete?: "))
         print("-" * 30)
 
-        cursor.execute("DELETE FROM quartos WHERE id_quarto = ?", (qual_mudar, ))
+        cursor.execute("DELETE FROM rooms WHERE id_room = ?", (which_one_to_change, ))  # "which_one_to_change" = qual_mudar
 
-        conexao.commit()
+        connection.commit()
 
-        print("Cadastro deletado com sucesso! ")
+        print("Record successfully deleted! ")
         print("-" * 30)
     
     except sqlite3.OperationalError as e:
         print("-" * 30)
-        print("ERROR: erro no banco de dados, verefique o codigo SQL.", e)
+        print("ERROR: database error; check the SQL code.", e)
         print("-" * 30)
         return
 
     except ValueError as e:
         print("-" * 30)
-        print("ERROR: digite um número válido.", e)
+        print("Error: enter valid information.", e)
         print("-" * 30)
         return
     
     except IndexError as e:
         print("-" * 30)
-        print("ERROR: Tentativa de acessar um dado inexistente na tabela/coluna.", e)
+        print("ERROR: Attempt to access non-existent data in the table/column.", e)
         print("-" * 30)
         return
     
     except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
-        print("-" * 30)
-        print("Operação cancelada pelo usuário, programa encerrado.")
-        print("-" * 30)
-        return
+            print("-" * 30)
+            print("Operation cancelled by the user; program terminated.")
+            print("-" * 30)
+            return
     
     finally:
-        conexao.close()
+        connection.close()
 
 def menu():
     try:
         while True:
-            print("\n ==== MENU DE INTERAÇÃO DO USUÁRIO ==== ")
-            print("1. cadastrar")
-            print("2. ver")
-            print("3. atualizar")
-            print("4. deletar")
-            print("5. sair")
+            print("\n ==== USER INTERACTION MENU ==== ")
+            print("1. SIGN UP")
+            print("2. SEE")
+            print("3. TO UPDATE")
+            print("4. DELETE")
+            print("5. EXIT")
 
             print("-" * 30)
-            opcao = int(input("qual opção vai escolher?: "))
+            option = int(input("Which option will you choose?: "))  # qual opção vai escolher?
             print("-" * 30)
 
-            if opcao == 1: cadastrar()
-            elif opcao == 2: ver()
-            elif opcao == 3: atualizar()
-            elif opcao == 4: deletar()
-            elif opcao == 5:
+            if option == 1: sign_up()
+            elif option == 2: see()
+            elif option == 3: to_update()
+            elif option == 4: delete()
+            elif option == 5:
                 print("-" * 30)
-                print("encerrando programa...")
+                print("closing program...")
                 print("-" * 30)
                 break
             else:
                 print("-" * 30)
-                print("opção inválida. tente novamente.")
+                print("Invalid option. Try again.")
                 print("-" * 30)
                 continue
         
     except ValueError as e:
-            print("-" * 30)
-            print("ERROR: digite um número valido.", e)
-            print("-" * 30)
-            return
-
+        print("-" * 30)
+        print("Error: enter valid information.", e)
+        print("-" * 30)
+        return
+    
     except KeyboardInterrupt:   # quando o usuário está em um input e encerra o terminal, volta para o menu de forma mais bonita.
             print("-" * 30)
-            print("Operação cancelada pelo usuário, programa encerrado.")
+            print("Operation cancelled by the user; program terminated.")
             print("-" * 30)
             return
 
-criar_banco()
+create_bank()
 menu()
