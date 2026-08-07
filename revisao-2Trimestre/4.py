@@ -1,15 +1,35 @@
 import sqlite3
 
-def create_bank():
-    try:
-        connection = sqlite3.connect('hotelaria.db')
-        cursor = connection.cursor()
-        cursor.execute("PRAGMA foreign_keys = ON")
+def connection_db():                                          
+    connection = sqlite3.connect('hotelaria.db')     # ==========================================
+    cursor = connection.cursor()                     # FUNÇÃO DE CONEXÃO CENTRALIZADA (Princípio DRY)
+    cursor.execute("PRAGMA foreign_keys = ON")       # ==========================================
+    return connection, cursor                        # Por que criar isso?
+#                                                      Em vez de repetir as configurações de conexão, cursor e PRAGMA
+#                                                      em todas as funções (o que gerava código repetitivo), nós centralizamos tudo aqui.
+                                                                                          
+#                                                      Como funciona:
+#                                                       1. Abre a conexão com o banco de dados SQLite ('hotelaria.db').
+#                                                       2. Cria um objeto cursor para executar os comandos SQL.
+#                                                       3. Ativa as chaves estrangeiras (PRAGMA foreign_keys = ON),
+#                                                          já que o SQLite vem com elas desativadas por padrão.
+#                                                       4. Retorna ambos os objetos para que as funções possam consultar
+#                                                            e salvar alterações, mantendo o código limpo e fácil de manter.
+#                                                       ==========================================                                                  
 
-        cursor.execute('''CREATE TABLE IF NOT EXISTS hoteis (
+
+
+def create_database():
+    connection = None    # Inicializa a variável para evitar UnboundLocalError
+    cursor = None
+
+    try:
+        connection, cursor = connection_db()
+
+        cursor.execute('''CREATE TABLE IF NOT EXISTS hotels (
                        id_hotel INTEGER PRIMARY KEY AUTOINCREMENT,
-                       name_hotel TEXT,
-                       city_hotel TEXT
+                       hotel_name TEXT,
+                       hotel_city TEXT
                        )
                        ''')
         
@@ -39,13 +59,20 @@ def create_bank():
         return
     
     finally:
-        connection.close()
+        # Só fecha se a conexão foi estabelecida de verdade
+        if connection:
+            connection.close()
 
-def sign_up():
+
+
+
+
+def register_room():
+    connection = None    # Inicializa a variável para evitar UnboundLocalError
+    cursor = None
+
     try:
-        connection = sqlite3.connect('hotelaria.db')
-        cursor = connection.cursor()
-        cursor.execute("PRAGMA foreign_keys = ON")
+        connection, cursor = connection_db()
         
         print("\n ==== REGISTER HOTEL ====")
         print("-" * 30)
@@ -62,7 +89,7 @@ def sign_up():
         print("-" * 30)
         id_hotel = int(input("What is the hotel room ID?: ")) # qual é o ID do hotel do quarto?
 
-        cursor.execute("INSERT INTO hoteis (name_hotel, city_hotel) VALUES (?, ?)", (name_hotel, city_hotel))
+        cursor.execute("INSERT INTO hotels (hotel_name, hotel_city) VALUES (?, ?)", (name_hotel, city_hotel))
         cursor.execute("INSERT INTO rooms (number_room, daily_rate, id_hotel_room) VALUES (?, ?, ?)", (number_room, daily_rate, id_hotel))
 
         connection.commit()
@@ -96,19 +123,44 @@ def sign_up():
         return
     
     finally:
-        connection.close()
+        # Só fecha se a conexão foi estabelecida de verdade
+        if connection:
+            connection.close()
 
-def see():
+
+
+
+
+
+def see_room():
+    connection = None    # Inicializa a variável para evitar UnboundLocalError
+    cursor = None
+
     try:
-        connection = sqlite3.connect('hotelaria.db')
-        cursor = connection.cursor()
+        connection, cursor = connection_db()
 
-        cursor.execute("SELECT * FROM rooms")
-        data = cursor.fetchall()
+        cursor.execute('''
+                SELECT rooms.id_room, rooms.number_room, rooms.daily_rate, hotels.hotel_name, hotels.hotel_city 
+                FROM rooms
+                INNER JOIN hotels ON rooms.id_hotel_room = hotels.id_hotel
+                ''')
+
+        rooms = cursor.fetchall()
 
         print("\n ==== REGISTRATIONS ====")   # "data" = dados
-        for room in data:
-            print(room)
+        if not rooms:
+            print("-" * 30)
+            print("There are no rooms registered in the system.")
+            print("-" * 30)
+            return
+        
+        for room in rooms:
+            room_id, number_room, daily_rate, hotel_name, hotel_city = room
+
+            print(f"Room ID: {room_id} / hotel name: {hotel_name} / hotel city: {hotel_city}")
+            print(f"number room: {number_room} / daily rate: ${daily_rate}")
+            print("-" * 30)
+            
     
     except sqlite3.OperationalError as e:
         print("-" * 30)
@@ -123,14 +175,21 @@ def see():
             return
     
     finally:
-        connection.close()
+        # Só fecha se a conexão foi estabelecida de verdade
+        if connection:
+            connection.close()
 
-def to_update():
+
+
+
+
+def update_room():
+    connection = None    # Inicializa a variável para evitar UnboundLocalError
+    cursor = None
+
     try:
-        connection = sqlite3.connect('hotelaria.db')
-        cursor = connection.cursor()
-
-        see()
+        connection, cursor = connection_db()
+        see_room()
 
         cursor.execute("SELECT * FROM rooms")
         data = cursor.fetchall()
@@ -189,14 +248,22 @@ def to_update():
             return
     
     finally:
-        connection.close()
+        # Só fecha se a conexão foi estabelecida de verdade
+        if connection:
+            connection.close()
 
-def delete():
+
+
+
+
+def delete_room():
+    connection = None    # Inicializa a variável para evitar UnboundLocalError
+    cursor = None
+
     try:
-        connection = sqlite3.connect('hotelaria.db')
-        cursor = connection.cursor()
+        connection, cursor = connection_db()
 
-        see()
+        see_room()
 
         cursor.execute("SELECT * FROM rooms")
         data = cursor.fetchall()
@@ -243,26 +310,31 @@ def delete():
             return
     
     finally:
-        connection.close()
+        # Só fecha se a conexão foi estabelecida de verdade
+        if connection:
+            connection.close()
+
+
+
 
 def menu():
     try:
         while True:
             print("\n ==== USER INTERACTION MENU ==== ")
-            print("1. SIGN UP")
-            print("2. SEE")
-            print("3. TO UPDATE")
-            print("4. DELETE")
+            print("1. REGISTER ROOM")
+            print("2. SEE ROOMS")
+            print("3. UPDATE ROOM")
+            print("4. DELETE ROOM")
             print("5. EXIT")
 
             print("-" * 30)
             option = int(input("Which option will you choose?: "))  # qual opção vai escolher?
             print("-" * 30)
 
-            if option == 1: sign_up()
-            elif option == 2: see()
-            elif option == 3: to_update()
-            elif option == 4: delete()
+            if option == 1: register_room()
+            elif option == 2: see_room()
+            elif option == 3: update_room()
+            elif option == 4: delete_room()
             elif option == 5:
                 print("-" * 30)
                 print("closing program...")
@@ -285,6 +357,8 @@ def menu():
             print("Operation cancelled by the user; program terminated.")
             print("-" * 30)
             return
+    
 
-create_bank()
+
+create_database()
 menu()
