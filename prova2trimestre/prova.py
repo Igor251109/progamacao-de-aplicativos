@@ -40,6 +40,7 @@ def tratar_erros_funcoes(funcao):
         print("-" * 30)
         print("o numero não existe.")
         print("-" * 30)
+        return
 
 def criar_tabelas():
     conexao = None
@@ -94,11 +95,20 @@ def adicionar_clinicas():
 
     try:
         conexao, cursor = conectar_db()
+        ver_franquias_e_clinicas()
 
         print("\n ==== ADICIONAR CLINICAS ====")
+        print("\n == ATENÇÃO!: Só será possivel adicionar clinicas que usem o ID de uma franquia existente.")
 
         bairro = input("qual o bairro da clinica?: ")
         id_franquia = int(input("qual ID da franquia?: "))
+
+        cursor.execute("SELECT id_franquia FROM franquias_pet WHERE id_franquia = ?", (id_franquia, ))
+        franquia = cursor.fetchone()
+
+        if franquia is None:
+            print("insira um ID valido de uma franquia. operação cancelada")
+            return
 
         cursor.execute("INSERT INTO clinicas (bairro_clinica, id_franquia_selecionada) VALUES (?, ?)", (bairro, id_franquia))
 
@@ -110,39 +120,56 @@ def adicionar_clinicas():
     finally:
         conexao.close()
 
-def ver_franquias():
+def ver_franquias_e_clinicas():
     conexao = None
     cursor = None
 
     try:
-
         conexao, cursor = conectar_db()
 
-        print("\n ==== VER FRANQUIAS REGISTRADAS ====")
+        cursor.execute('''SELECT id_franquia, marca_franquia, site_franquia FROM franquias_pet''')
+        franquias = cursor.fetchall()
 
-        cursor.execute('''SELECT clinicas.id_clinica, clinicas.bairro_clinica, franquias_pet.marca_franquia, franquias_pet.site_franquia
-                       FROM clinicas INNER JOIN franquias_pet ON clinicas.id_franquia_selecionada = franquias_pet.id_franquia'''
-        )
+        print("\n ==== FRANQUIAS REGISTRADAS ====")
+
+        if not franquias:
+            print("não há nenhuma franquia registrada.")
+        else:
+            for franquia in franquias:
+                id_franquia, marca, site = franquia
+
+                print(f"id franquia: {id_franquia}")
+                print(f"marca: {marca}")
+                print(f"site: {site}")
+                print("-" * 30)
+
+        cursor.execute("""
+            SELECT clinicas.id_clinica,
+                   clinicas.bairro_clinica,
+                   franquias_pet.marca_franquia
+            FROM clinicas
+            LEFT JOIN franquias_pet
+            ON clinicas.id_franquia_selecionada = franquias_pet.id_franquia
+        """)
 
         clinicas = cursor.fetchall()
 
-        print("\n ==== CLINICAS REGISTRADAS ====")
+        print("\n ==== CLÍNICAS REGISTRADAS ====")
 
         if not clinicas:
-            print("não há nenhuma clinica registrada.")
-            return
-        
-        for clinica in clinicas:
-            id_clinica, bairro_clinica, marca_franquia, site = clinica
+            print("não há nenhuma clínica registrada.")
+        else:
+            for clinica in clinicas:
+                id_clinica, bairro, marca = clinica
 
-            print(f"id clinica: {id_clinica},")
-            print(f"marca: {marca_franquia},")
-            print(f"site: {site},")
-            print(f"bairro: {bairro_clinica}")
-            print("-" * 30)
-    
+                print(f"id clínica: {id_clinica}")
+                print(f"bairro: {bairro}")
+                print(f"franquia: {marca}")
+                print("-" * 30)
+
     finally:
-        conexao.close()
+        if conexao:
+            conexao.close()
     
 def atualizar():
     conexao = None
@@ -151,7 +178,7 @@ def atualizar():
     try:
         conexao, cursor = conectar_db()
 
-        ver_franquias()
+        ver_franquias_e_clinicas()
 
         cursor.execute("SELECT * FROM clinicas")
         dados = cursor.fetchall()
@@ -194,7 +221,7 @@ def deletar():
     try:
         conexao, cursor = conectar_db()
 
-        ver_franquias()
+        ver_franquias_e_clinicas()
 
         print("\n ==== DELETAR CADASTROS ==== ")
 
@@ -228,28 +255,39 @@ def deletar():
 def menu():
     while True:
         print("\n ==== MENU DE INTERAÇÃO ====")
-        print("1. ADICIONAR FRANQUIAS E CLINICAS")
-        print("2. VER REGISTROS")
-        print("3. ATUALIZAR CLINICAS")
-        print("4. DELETAR CLINICAS")
-        print("5. SAIR")
+        print("1. ADICIONAR FRANQUIAS")
+        print("2. ADICIONAR CLÍNICAS")
+        print("3. VER REGISTROS")
+        print("4. ATUALIZAR CLINICAS")
+        print("5. DELETAR CLINICAS")
+        print("6. SAIR")
 
         opcao = int(input("qual opção vai escolher?: "))
 
         if opcao == 1:
             tratar_erros_funcoes(adicionar_franquias)
-            tratar_erros_funcoes(adicionar_clinicas)
+            quer_adicionar = input("deseja adicionar uma clínica? (digite sim ou não): ")
+            if quer_adicionar == "sim":
+                tratar_erros_funcoes(adicionar_clinicas)
+
         elif opcao == 2:
-            tratar_erros_funcoes(ver_franquias)
+            tratar_erros_funcoes(adicionar_clinicas)
+
         elif opcao == 3:
-            tratar_erros_funcoes(atualizar)
+            tratar_erros_funcoes(ver_franquias_e_clinicas)
+
         elif opcao == 4:
-            tratar_erros_funcoes(deletar)
+            tratar_erros_funcoes(atualizar)
+
         elif opcao == 5:
+            tratar_erros_funcoes(deletar)
+
+        elif opcao == 6:
             print("-" * 30)
             print("encerrando sistema...")
             print("-" * 30)
             break
+
         else:
             print("-" * 30)
             print("opção invalida. tente novamente.")
