@@ -195,6 +195,13 @@ def atualizar():
         id_franquia = int(input("qual ID da franquia?: "))
         print("-" * 30)
 
+        cursor.execute("SELECT id_franquia FROM franquias_pet WHERE id_franquia = ?", (id_franquia, ))
+        franquia = cursor.fetchone()
+
+        if franquia is None:
+            print("insira um ID valido de uma franquia. operação cancelada")
+            return
+
         certeza = input("tem certeza que deseja alterar esse cadastro? essa ação será irreverssivel. (digite 'sim' para proseguir): ")
 
         if certeza == "sim" or certeza == "s":
@@ -232,6 +239,14 @@ def deletar():
 
         if not dados:
             print("não há nenhum registro.")
+            print("-" * 30)
+            return
+        
+        cursor.execute("SELECT id_franquia FROM franquias_pet WHERE id_franquia = ?", (qual_deletar, ))
+        franquia = cursor.fetchone()
+
+        if franquia is None:
+            print("insira um ID valido de uma franquia. operação cancelada")
             return
         
         certeza = input("tem certeza que deseja deletar esse cadastro? Essa ação será irreverssivel. (digite 'sim' para prosseguir): ")
