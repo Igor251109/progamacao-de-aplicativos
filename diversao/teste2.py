@@ -1,0 +1,2 @@
+def mensagem():
+    print("feito")
