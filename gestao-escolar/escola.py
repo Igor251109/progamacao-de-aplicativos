@@ -8,13 +8,14 @@ def cadastrar_escolas():
         conexao, cursor = conectar()
         print("\n ==== SISTEMA DE CADASTRAMENTO DE ESCOLAS ====")
 
-        nome_escola = input("digite o nome da escola: ").strip()
-        cidade_escola = input("digite a cidade da cidade: ").strip()
+        nome_escola = "Sesi Paranavaí"
+        cidade_escola = "Paranavaí"
 
         cursor.execute('''INSERT INTO escolas (nome_escola, cidade_escola) VALUES (?, ?)''', (nome_escola, cidade_escola))
 
         conexao.commit()
 
+        print("certo")
         return "certo"
     finally:
         conexao.close()
@@ -28,12 +29,18 @@ def listar_escolas():
 
         print("\n ==== LISTAGEM DE ESCOLAS ====")
 
-        cursor.execute('''SELECT * FROM escolas''')
+        cursor.execute('''SELECT * FROM escolas ORDER BY id''')
         dados = cursor.fetchall()
 
-        for escolas in dados:
-            print(escolas)
+        if not dados:
+            print("não há nenhuma escola no sistema.")
+            return
         
+        for escolas in dados:
+            print(f"ID: {dados[0]} | Nome escola: {dados[1]} | Cidade Escola: {dados[2]}")
+            print("-" * 30)
+
+        print("certo")
         return "certo"
     
     finally:

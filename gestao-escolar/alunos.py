@@ -11,9 +11,9 @@ def cadastrar_alunos():
         print("\n ==== SISTEMA DE CADASTRAMENTO DE ALUNOS ====")
         print("\n ATENÇÃO! Só será possivel adicionar alunos a um ID_TURMA válido.")
 
-        nome = input("digite seu nome: ")
-        idade = int(input("digite sua idade: "))
-        id_turma = int(input("qual ID da turma relacionada?: "))
+        nome = "Igor"
+        idade = 16
+        id_turma = 1
 
         cursor.execute('''SELECT id FROM turmas WHERE ID = ?''', (id_turma, ))
         dados = cursor.fetchone()
@@ -27,6 +27,7 @@ def cadastrar_alunos():
 
             conexao.commit()
 
+            print("certo")
             return "certo"
         
     finally:
@@ -41,7 +42,7 @@ def listar_alunos():
         print("\n ==== LISTAGEM DE ALUNOS E TURMAS RELACIONADAS ====")
 
         cursor.execute('''
-            SELECT alunos.nome, alunos.idade, alunos.id_turma, turmas.id, turmas.nome_turma FROM alunos LEFT JOIN turmas ON alunos.id_turma = turmas.id''')
+            SELECT alunos.nome, alunos.idade, alunos.id_turma, turmas.id, turmas.nome_turma FROM alunos LEFT JOIN turmas ON alunos.id_turma = turmas.id ORDER BY alunos.id''')
         dados = cursor.fetchall()
 
         if not dados:
@@ -49,12 +50,11 @@ def listar_alunos():
             return
 
         listar_turmas()
-        for aluno in dados:
-            nome, idade, id_turma, id, nome_turma = aluno
+        for alunos in dados:
+            print(f"ID: {alunos[0]} | Nome: {alunos[1]} | Idade: {alunos[2]} | ID Turma: {alunos[3]}")
+            print("-" * 30)
 
-            print(f"nome do aluno: {nome}; idade do aluno: {idade};")
-            print(f"turma relacionada (id): {id}; id_turma: {id_turma}; nome da turma: {nome_turma}")
-        
+        print("certo")
         return "certo"
     finally:
         conexao.close()

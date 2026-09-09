@@ -1,4 +1,3 @@
-import sqlite3
 from banco import laboratorios
 from reservas import adicionarReservas
 from verReservas import verReservas

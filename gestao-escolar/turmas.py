@@ -11,8 +11,8 @@ def cadastrar_turmas():
         print("\n ==== SISTEMA DE CADASTRAMENTO DE TURMAS ====")
         print("ATENÇÃO! Só poderão ser cadastradas turmas com um ID_ESCOLA váldo.")
 
-        nome_turma = input("digite o nome da turma: ").strip()
-        id_escola = int(input("digite o ID da escola: "))
+        nome_turma = "2 ano"
+        id_escola = 1
 
         cursor.execute('''SELECT id FROM escolas WHERE id = ?''', (id_escola, ))
         dados = cursor.fetchone()
@@ -26,6 +26,7 @@ def cadastrar_turmas():
 
             conexao.commit()
 
+            print("certo")
             return "certo"
         
     finally:
@@ -41,7 +42,7 @@ def listar_turmas():
         print("\n ==== LISTAGEM DE ESCOLAS E TURMAS RELACIONADAS ====")
 
         cursor.execute('''
-SELECT escolas.nome_escola, escolas.id, escolas.cidade_escola, turmas.nome_turma, turmas.id_escola FROM turmas LEFT JOIN escolas ON turmas.id_escola = escolas.id''')
+SELECT escolas.nome_escola, escolas.id, escolas.cidade_escola, turmas.nome_turma, turmas.id_escola FROM turmas LEFT JOIN escolas ON turmas.id_escola = escolas.id ORDER BY turmas.id''')
         
         turmas = cursor.fetchall()
 
@@ -50,13 +51,9 @@ SELECT escolas.nome_escola, escolas.id, escolas.cidade_escola, turmas.nome_turma
             return
         
         listar_escolas()
-        
-        for registros in turmas:
-                nome_escola, id, cidade_escola, nome_turma, id_escola = registros
-
-                print(f"nome turma: {nome_turma};")
-                print(f"nome da escola relacionada: {nome_escola}; ID escola relacionada: {id};")
-                print(f"cidade escola: {cidade_escola}; id: {id_escola}")
+        for turma in turmas:
+            print(f"ID: {turma[0]} | Nome Turma: {turma[1]} | ID Escola: {turma[2]}")
+            print("-" * 30)
         
         return "certo"
     finally:
