@@ -1,25 +1,28 @@
 # Implemente busca binária em um vetor ordenado de números inteiros. A função deve retornar o índice do elemento ou -1 caso não exista.
 
-def busca_binaria(vetor, procurado):
-    inicio = 0
-    fim = len(vetor) - 1
+import sqlite3
 
-    while inicio <= fim:
-        meio = (inicio + fim) // 2
+conexao = sqlite3.connect("exercicios.db")
+cursor = conexao.cursor()
 
-        if procurado == vetor[meio]:
-            return f"encontrado! o indice do numero {procurado} é: {meio}"
-        
-        elif vetor[meio] < procurado:
-            inicio = meio + 1
+cursor.execute('''CREATE TABLE IF NOT EXISTS numeros_ordenados (
+               id_numero INTEGER PRIMARY KEY AUTOINCREMENT,
+               numero INTEGER UNIQUE NOT NULL
+               )
+               ''')
 
-        elif vetor[meio] > procurado:
-            fim = meio - 1
-        
-    return -1
+def adicionar(numero):
+    cursor.execute('''INSERT INTO numeros_ordenados (numero) VALUES (?)''', (numero, ))
+    conexao.commit()
+    print("deu certo.")
+
+def ver():
+    cursor.execute('''SELECT id_numero, numero FROM numeros_ordenados ORDER BY numero''')
+    resultados = cursor.fetchall()
+    for id_numero, numero in resultados:
+        print(f'ID: {id_numero} | Número: {numero}')
 
 
-lista = list(range(1, 151))
-numero = int(input("digite um numero entre 1 e 150: "))
+ver()
 
-print(busca_binaria(lista, numero))
+conexao.close()
