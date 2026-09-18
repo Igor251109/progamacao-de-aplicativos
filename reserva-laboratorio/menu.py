@@ -9,17 +9,24 @@ def menu():
         print("1. REALIZAR RESERVAS;")
         print("2. CONSULTAR RESERVAS;")
         print("3. SAIR")
+        try:
+            opcao = int(input("Digite a opção que deseja executar: "))
+            match opcao:
+                case 1:
+                    adicionarReservas()
+                case 2:
+                    verReservas()
+                case 3:
+                    print("saindo...")
+                    break
+                case _:
+                    print("opção inválida. tente novamente.")
+                    continue
 
-        opcao = int(input("Digite a opção que deseja executar: "))
-
-        if opcao == 1: tratarErrosFuncoes(adicionarReservas)
-        elif opcao == 2: tratarErrosFuncoes(verReservas)
-        elif opcao == 3:
-            print("programa encerrado pelo usuário...")
-            break
-        else:
-            print("opção inválida. tente novamente.")
+        except ValueError:
+            print("dados inválidos. Tente novamente.")
             continue
+        
 
 tratarErrosFuncoes(laboratorios)
 tratarErrosFuncoes(menu)
